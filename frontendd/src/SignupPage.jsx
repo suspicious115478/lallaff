@@ -23,7 +23,8 @@ function SignupPage({ onSignupSuccess }) {
         setStatus("Signup successful!");
 
         // Move to SyncPage
-        onSignupSuccess(json.user);
+       onSignupSuccess(json); // pass the whole response object
+
       } else {
         setStatus(`Error: ${json.error || "Signup failed"}`);
       }
