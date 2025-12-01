@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function SignupPage({ onSignupSuccess }) {
+function SignupPage({ onSignupSuccess, goToLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [adminId, setAdminId] = useState('');
@@ -21,10 +21,7 @@ function SignupPage({ onSignupSuccess }) {
       const json = await r.json();
       if (r.ok) {
         setStatus("Signup successful!");
-
-        // Move to SyncPage
-       onSignupSuccess(json); // pass the whole response object
-
+        onSignupSuccess(json); // Redirect to sync
       } else {
         setStatus(`Error: ${json.error || "Signup failed"}`);
       }
@@ -41,9 +38,9 @@ function SignupPage({ onSignupSuccess }) {
         <div style={{ margin: '8px 0' }}>
           <label>Email: </label>
           <input 
-            type="email" 
-            value={email} 
+            type="email"
             required
+            value={email}
             onChange={(e) => setEmail(e.target.value)} 
           />
         </div>
@@ -51,9 +48,9 @@ function SignupPage({ onSignupSuccess }) {
         <div style={{ margin: '8px 0' }}>
           <label>Password: </label>
           <input 
-            type="password" 
-            value={password} 
+            type="password"
             required
+            value={password}
             onChange={(e) => setPassword(e.target.value)} 
           />
         </div>
@@ -61,14 +58,21 @@ function SignupPage({ onSignupSuccess }) {
         <div style={{ margin: '8px 0' }}>
           <label>Admin ID: </label>
           <input 
-            value={adminId} 
             required
+            value={adminId}
             onChange={(e) => setAdminId(e.target.value)} 
           />
         </div>
 
         <button type="submit">Signup</button>
       </form>
+
+      <button 
+        onClick={goToLogin}
+        style={{ marginTop: 10 }}
+      >
+        Already have an account? Login
+      </button>
 
       <pre style={{ marginTop: 20 }}>{status}</pre>
     </div>
