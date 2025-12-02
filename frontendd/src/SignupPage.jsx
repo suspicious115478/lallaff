@@ -91,7 +91,7 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
 
 export default SignupPage;
 
-// -------------------------------- STYLES --------------------------------
+// -------------------- STYLES --------------------
 
 const styles = {
   page: {
@@ -113,11 +113,11 @@ const styles = {
     background: "rgba(255,255,255,0.12)",
     backdropFilter: "blur(20px)",
     boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
-    animation: "fadeIn 0.7s ease",
     color: "white",
   },
 
   title: { margin: 0, fontSize: 32, fontWeight: 700, textAlign: "center" },
+
   subtitle: {
     textAlign: "center",
     marginTop: 6,
@@ -125,8 +125,6 @@ const styles = {
     fontSize: 15,
     opacity: 0.8,
   },
-
-  form: { },
 
   inputGroup: {
     position: "relative",
@@ -142,7 +140,6 @@ const styles = {
     background: "rgba(255,255,255,0.1)",
     color: "white",
     outline: "none",
-    transition: "0.2s",
   },
 
   floatingLabel: {
@@ -166,7 +163,6 @@ const styles = {
     cursor: "pointer",
     fontWeight: 600,
     boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
-    transition: "0.25s",
   },
 
   switchButton: {
@@ -178,7 +174,7 @@ const styles = {
     cursor: "pointer",
   },
 
-  linkText: { color: "#a5b4fc", fontWeight: "600" },
+  linkText: { color: "#a5b4fc", fontWeight: 600 },
 
   status: {
     marginTop: 20,
