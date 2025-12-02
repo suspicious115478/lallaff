@@ -32,48 +32,46 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
   };
 
   return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        <h2 style={titleStyle}>Welcome Back</h2>
-        <p style={subtitleStyle}>Login to continue</p>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Welcome Back</h2>
+        <p style={styles.subtitle}>Login to continue</p>
 
         <form onSubmit={submitLogin}>
-          {/* EMAIL */}
-          <div style={inputGroupStyle}>
+          <div style={styles.inputGroup}>
             <input
               type="email"
               required
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={inputStyle}
+              style={styles.input}
             />
-            <label style={floatingLabelStyle}>Email</label>
+            <label style={styles.floatingLabel}>Email</label>
           </div>
 
-          {/* PASSWORD */}
-          <div style={inputGroupStyle}>
+          <div style={styles.inputGroup}>
             <input
               type="password"
               required
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={inputStyle}
+              style={styles.input}
             />
-            <label style={floatingLabelStyle}>Password</label>
+            <label style={styles.floatingLabel}>Password</label>
           </div>
 
-          <button type="submit" style={buttonStyle}>
+          <button type="submit" style={styles.button}>
             Login
           </button>
         </form>
 
-        <button onClick={goToSignup} style={switchButtonStyle}>
-          Don’t have an account? <span style={switchTextStyle}>Sign Up</span>
+        <button onClick={goToSignup} style={styles.switchButton}>
+          Don’t have an account? <span style={styles.linkText}>Sign Up</span>
         </button>
 
-        {status && <p style={statusStyle}>{status}</p>}
+        {status && <p style={styles.status}>{status}</p>}
       </div>
     </div>
   );
@@ -81,106 +79,100 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
 
 export default LoginPage;
 
+// SAME STYLE OBJECT AS SIGNUP
 
-// ---------------- MATCHING STYLES ----------------
+const styles = {
+  page: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    background: "linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)",
+    backgroundSize: "400% 400%",
+    animation: "gradientMove 12s ease infinite",
+  },
 
-const pageStyle = {
-  height: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 20,
-  background: "linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)",
-  backgroundSize: "400% 400%",
-  animation: "gradientMove 12s ease infinite",
-};
+  card: {
+    width: "100%",
+    maxWidth: 420,
+    padding: "40px 32px",
+    borderRadius: 20,
+    background: "rgba(255,255,255,0.12)",
+    backdropFilter: "blur(20px)",
+    boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
+    color: "white",
+  },
 
-const cardStyle = {
-  width: "100%",
-  maxWidth: 420,
-  padding: "40px 32px",
-  borderRadius: 20,
-  background: "rgba(255,255,255,0.12)",
-  backdropFilter: "blur(20px)",
-  boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
-  color: "white",
-};
+  title: { margin: 0, fontSize: 32, fontWeight: 700, textAlign: "center" },
 
-const titleStyle = {
-  margin: 0,
-  fontSize: 32,
-  fontWeight: 700,
-  textAlign: "center",
-};
+  subtitle: {
+    textAlign: "center",
+    marginTop: 6,
+    marginBottom: 25,
+    fontSize: 15,
+    opacity: 0.8,
+  },
 
-const subtitleStyle = {
-  textAlign: "center",
-  marginTop: 6,
-  marginBottom: 25,
-  fontSize: 15,
-  opacity: 0.8,
-};
+  inputGroup: {
+    position: "relative",
+    marginBottom: 22,
+  },
 
-const inputGroupStyle = {
-  position: "relative",
-  marginBottom: 22,
-};
+  input: {
+    width: "100%",
+    padding: "14px 12px",
+    fontSize: 16,
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.4)",
+    background: "rgba(255,255,255,0.1)",
+    color: "white",
+    outline: "none",
+  },
 
-const inputStyle = {
-  width: "100%",
-  padding: "14px 12px",
-  fontSize: 16,
-  borderRadius: 10,
-  border: "1px solid rgba(255,255,255,0.4)",
-  background: "rgba(255,255,255,0.1)",
-  color: "white",
-  outline: "none",
-  transition: "0.2s",
-};
+  floatingLabel: {
+    position: "absolute",
+    left: 14,
+    top: 14,
+    color: "rgba(255,255,255,0.65)",
+    fontSize: 14,
+    transition: "0.2s",
+    pointerEvents: "none",
+  },
 
-const floatingLabelStyle = {
-  position: "absolute",
-  left: 14,
-  top: 14,
-  color: "rgba(255,255,255,0.7)",
-  fontSize: 14,
-  transition: "0.2s",
-  pointerEvents: "none",
-};
+  button: {
+    width: "100%",
+    padding: "14px 0",
+    background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
+    color: "white",
+    fontSize: 17,
+    borderRadius: 10,
+    border: "none",
+    cursor: "pointer",
+    fontWeight: 600,
+    marginTop: 5,
+    boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+  },
 
-const buttonStyle = {
-  width: "100%",
-  padding: "14px 0",
-  background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
-  color: "white",
-  fontSize: 17,
-  borderRadius: 10,
-  border: "none",
-  cursor: "pointer",
-  fontWeight: 600,
-  marginTop: 5,
-  boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
-  transition: "0.25s",
-};
+  switchButton: {
+    marginTop: 18,
+    background: "none",
+    border: "none",
+    color: "white",
+    fontSize: 15,
+    cursor: "pointer",
+  },
 
-const switchButtonStyle = {
-  marginTop: 18,
-  background: "none",
-  border: "none",
-  color: "white",
-  fontSize: 15,
-  cursor: "pointer",
-};
+  linkText: {
+    color: "#a5b4fc",
+    fontWeight: 600,
+  },
 
-const switchTextStyle = {
-  color: "#a5b4fc",
-  fontWeight: 600,
-};
-
-const statusStyle = {
-  marginTop: 20,
-  padding: 10,
-  background: "rgba(255,255,255,0.15)",
-  borderRadius: 10,
-  textAlign: "center",
+  status: {
+    marginTop: 20,
+    padding: 10,
+    background: "rgba(255,255,255,0.15)",
+    borderRadius: 10,
+    textAlign: "center",
+  },
 };
