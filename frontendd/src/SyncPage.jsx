@@ -119,29 +119,41 @@ function SyncPage({ user }) {
           </div>
         </section>
 
-        {/* ACTIVE AGENTS CHART */}
-        <section>
+                {/* ACTIVE AGENTS LIST */}
+        <section className="mt-10">
           <h2 className="text-xl font-semibold text-gray-700 mb-2">Active Agents</h2>
           <div className="bg-gray-50 p-4 rounded-lg">
             {agents.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={agents} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="name" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="active" fill="#10b981" barSize={30} />
-                </BarChart>
-              </ResponsiveContainer>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="p-2 font-medium text-gray-700">Agent Name</th>
+                    <th className="p-2 font-medium text-gray-700 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {agents.map((a, index) => (
+                    <tr
+                      key={index}
+                      className="border-b last:border-none hover:bg-gray-100 transition"
+                    >
+                      <td className="p-2 font-mono">{a.name}</td>
+                      <td className="p-2 text-center">
+                        {a.active === 1 ? (
+                          <span className="text-green-600 font-semibold">Active</span>
+                        ) : (
+                          <span className="text-red-600 font-semibold">Inactive</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
-              <p className="text-gray-500">No active agents found...</p>
+              <p className="text-gray-500">No agents found...</p>
             )}
           </div>
         </section>
 
-      </div>
-    </div>
-  );
-}
 
 export default SyncPage;
