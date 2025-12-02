@@ -74,3 +74,71 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
 }
 
 export default LoginPage;
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    background: "#f5f6fa",
+    padding: "20px",
+  },
+  card: {
+    width: "100%",
+    maxWidth: "420px",
+    background: "#fff",
+    borderRadius: "14px",
+    padding: "35px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: "25px",
+    fontSize: "26px",
+    fontWeight: "600",
+    color: "#333",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  input: {
+    padding: "12px 15px",
+    fontSize: "16px",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    outline: "none",
+    transition: "0.2s",
+  },
+  button: {
+    padding: "12px",
+    fontSize: "17px",
+    background: "#4C6EF5",
+    border: "none",
+    color: "white",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginTop: "5px",
+    transition: "0.2s",
+  },
+  link: {
+    color: "#4C6EF5",
+    cursor: "pointer",
+    fontWeight: "500",
+  },
+  switchText: {
+    marginTop: "15px",
+    textAlign: "center",
+    color: "#555",
+    fontSize: "14px",
+  },
+  status: {
+    marginTop: "15px",
+    textAlign: "center",
+    color: "#666",
+    fontSize: "14px",
+  },
+};
+
