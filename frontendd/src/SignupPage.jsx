@@ -33,50 +33,57 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.page}>
       <div style={styles.card}>
         <h2 style={styles.title}>Create an Account</h2>
+        <p style={styles.subtitle}>Manage and sync your dispatch system</p>
 
         <form onSubmit={submitSignup} style={styles.form}>
-          <input
-            type="email"
-            placeholder="Enter Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-          />
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              placeholder="you@example.com"
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Enter Password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-          />
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              placeholder="••••••••"
+            />
+          </div>
 
-          <input
-            placeholder="Admin ID"
-            required
-            value={adminId}
-            onChange={(e) => setAdminId(e.target.value)}
-            style={styles.input}
-          />
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Admin ID</label>
+            <input
+              required
+              value={adminId}
+              onChange={(e) => setAdminId(e.target.value)}
+              style={styles.input}
+              placeholder="Enter Admin ID"
+            />
+          </div>
 
           <button type="submit" style={styles.button}>
             Sign Up
           </button>
         </form>
 
-        <p style={styles.switchText}>
-          Already have an account?{" "}
-          <span style={styles.link} onClick={goToLogin}>
-            Login
-          </span>
-        </p>
+        <button onClick={goToLogin} style={styles.switchBtn}>
+          Already have an account? <span style={styles.linkText}>Login</span>
+        </button>
 
-        <p style={styles.status}>{status}</p>
+        {status && <p style={styles.status}>{status}</p>}
       </div>
     </div>
   );
@@ -85,69 +92,102 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
 export default SignupPage;
 
 const styles = {
-  container: {
+  page: {
+    minHeight: "100vh",
+    background: "#f8fafc",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minHeight: "100vh",
-    background: "#f5f6fa",
-    padding: "20px",
+    padding: 20,
   },
+
   card: {
     width: "100%",
-    maxWidth: "420px",
-    background: "#fff",
-    borderRadius: "14px",
-    padding: "35px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+    maxWidth: 420,
+    background: "white",
+    borderRadius: 18,
+    padding: "40px 32px",
+    boxShadow: "0 4px 40px rgba(0,0,0,0.06)",
+    border: "1px solid #e5e7eb",
+    animation: "fadeIn 0.4s ease",
   },
+
   title: {
+    fontSize: 28,
+    margin: 0,
+    fontWeight: 700,
     textAlign: "center",
-    marginBottom: "25px",
-    fontSize: "26px",
-    fontWeight: "600",
-    color: "#333",
+    color: "#1e293b",
   },
+
+  subtitle: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#64748b",
+    marginTop: 6,
+    marginBottom: 28,
+  },
+
   form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
+    width: "100%",
   },
+
+  inputGroup: {
+    marginBottom: 18,
+  },
+
+  label: {
+    display: "block",
+    fontWeight: 600,
+    color: "#334155",
+    marginBottom: 6,
+  },
+
   input: {
-    padding: "12px 15px",
-    fontSize: "16px",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: "1px solid #d1d5db",
+    fontSize: 15,
     outline: "none",
+    background: "#f9fafb",
     transition: "0.2s",
   },
+
   button: {
-    padding: "12px",
-    fontSize: "17px",
-    background: "#4C6EF5",
-    border: "none",
+    width: "100%",
+    padding: "13px 0",
+    background: "#4f46e5",
     color: "white",
-    borderRadius: "8px",
+    fontSize: 16,
+    borderRadius: 10,
+    border: "none",
     cursor: "pointer",
-    marginTop: "5px",
+    marginTop: 10,
+    fontWeight: 600,
     transition: "0.2s",
   },
-  link: {
-    color: "#4C6EF5",
+
+  switchBtn: {
+    marginTop: 18,
+    width: "100%",
+    textAlign: "center",
+    background: "none",
+    border: "none",
+    color: "#475569",
+    fontSize: 14,
     cursor: "pointer",
-    fontWeight: "500",
   },
-  switchText: {
-    marginTop: "15px",
-    textAlign: "center",
-    color: "#555",
-    fontSize: "14px",
+
+  linkText: {
+    color: "#4f46e5",
+    fontWeight: 600,
   },
+
   status: {
-    marginTop: "15px",
+    marginTop: 18,
     textAlign: "center",
-    color: "#666",
-    fontSize: "14px",
+    fontSize: 14,
+    color: "#475569",
   },
 };
-
