@@ -41,7 +41,8 @@ function SyncPage({ user }) {
   // 🔥 Fetch Active Agents from Firebase
   async function fetchAgents() {
     try {
-      const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/`;
+     const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
+;
 
       const res = await fetch(fbURL);
       const data = await res.json();
