@@ -1,5 +1,68 @@
 import React, { useState } from "react";
 
+const ui = {
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#f3f5f9",
+    padding: 20,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 420,
+    background: "#ffffff",
+    padding: "36px 30px",
+    borderRadius: 18,
+    boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: 30,
+    fontSize: 28,
+    fontWeight: 700,
+    color: "#1f2d5a",
+  },
+  label: { fontWeight: 600, fontSize: 14, color: "#1f2d5a" },
+  input: {
+    width: "100%",
+    padding: "13px 14px",
+    marginTop: 6,
+    borderRadius: 10,
+    border: "1px solid #d8dde8",
+    fontSize: 15,
+    outline: "none",
+    transition: "0.2s",
+  },
+  buttonPrimary: {
+    width: "100%",
+    marginTop: 18,
+    padding: "13px 14px",
+    background: "#3757ff",
+    color: "#fff",
+    border: "none",
+    borderRadius: 10,
+    fontSize: 16,
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "0.2s",
+  },
+  buttonSecondary: {
+    width: "100%",
+    marginTop: 14,
+    padding: "12px 14px",
+    background: "#eef1ff",
+    color: "#3757ff",
+    border: "none",
+    borderRadius: 10,
+    fontSize: 15,
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "0.2s",
+  },
+};
+
 function LoginPage({ onLoginSuccess, goToSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,93 +83,26 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
 
       const json = await r.json();
       if (r.ok) {
-        setStatus("Login successful!");
+        setStatus("Success!");
         onLoginSuccess(json);
       } else {
-        setStatus("Error: " + (json.error || "Login failed"));
+        setStatus(json.error || "Login failed");
       }
     } catch (err) {
-      setStatus("Error: " + err.message);
+      setStatus(err.message);
     }
   };
 
-  const container = {
-    minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f4f6f9",
-    padding: 20,
-  };
-
-  const card = {
-    width: "100%",
-    maxWidth: 420,
-    background: "#fff",
-    padding: "32px 28px",
-    borderRadius: 16,
-    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-  };
-
-  const header = {
-    textAlign: "center",
-    marginBottom: 25,
-    fontSize: 26,
-    fontWeight: 700,
-    background:
-      "linear-gradient(135deg, #4b68ff 0%, #6a8dff 50%, #7bb2ff 100%)",
-    WebkitBackgroundClip: "text",
-    color: "transparent",
-  };
-
-  const label = { fontWeight: 600, fontSize: 14 };
-
-  const input = {
-    width: "100%",
-    padding: "12px 14px",
-    marginTop: 6,
-    borderRadius: 10,
-    border: "1px solid #d7ddea",
-    fontSize: 15,
-    outline: "none",
-  };
-
-  const button = {
-    width: "100%",
-    marginTop: 16,
-    padding: "12px 14px",
-    background: "#4b68ff",
-    color: "#fff",
-    border: "none",
-    borderRadius: 10,
-    fontSize: 16,
-    fontWeight: 600,
-    cursor: "pointer",
-  };
-
-  const switchBtn = {
-    width: "100%",
-    marginTop: 12,
-    padding: "10px 14px",
-    background: "#eef1ff",
-    color: "#4b68ff",
-    border: "none",
-    borderRadius: 10,
-    fontSize: 15,
-    cursor: "pointer",
-    fontWeight: 600,
-  };
-
   return (
-    <div style={container}>
-      <div style={card}>
-        <h2 style={header}>Welcome Back</h2>
+    <div style={ui.container}>
+      <div style={ui.card}>
+        <h2 style={ui.title}>Welcome Back</h2>
 
         <form onSubmit={submitLogin}>
-          <div style={{ marginBottom: 16 }}>
-            <label style={label}>Email</label>
+          <div style={{ marginBottom: 18 }}>
+            <label style={ui.label}>Email</label>
             <input
-              style={input}
+              style={ui.input}
               type="email"
               required
               value={email}
@@ -114,10 +110,10 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
             />
           </div>
 
-          <div style={{ marginBottom: 16 }}>
-            <label style={label}>Password</label>
+          <div style={{ marginBottom: 18 }}>
+            <label style={ui.label}>Password</label>
             <input
-              style={input}
+              style={ui.input}
               type="password"
               required
               value={password}
@@ -125,16 +121,14 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
             />
           </div>
 
-          <button style={button} type="submit">
-            Login
-          </button>
+          <button style={ui.buttonPrimary}>Login</button>
         </form>
 
-        <button style={switchBtn} onClick={goToSignup}>
-          Don't have an account? Signup
+        <button style={ui.buttonSecondary} onClick={goToSignup}>
+          Create new account
         </button>
 
-        <p style={{ marginTop: 16, textAlign: "center", color: "#444" }}>
+        <p style={{ marginTop: 16, textAlign: "center", color: "#3a3a3a" }}>
           {status}
         </p>
       </div>
