@@ -42,7 +42,6 @@ function SyncPage({ user }) {
     return () => clearInterval(interval);
   }, [user.admin_id]);
 
-  // Prepare data for chart
   const chartData = writeHistory.map((count, idx) => ({ name: `#${idx + 1}`, count }));
 
   return (
