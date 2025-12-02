@@ -35,43 +35,43 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Create an Account</h2>
-        <p style={styles.subtitle}>Sign up to manage your dispatch sync</p>
+        <h2 style={styles.title}>Create Account</h2>
+        <p style={styles.subtitle}>Join the Dispatch Sync System</p>
 
         <form onSubmit={submitSignup} style={styles.form}>
           <div style={styles.inputGroup}>
-            <label style={styles.label}>Email</label>
             <input
               type="email"
               required
+              placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               style={styles.input}
-              placeholder="you@example.com"
             />
+            <label style={styles.floatingLabel}>Email</label>
           </div>
 
           <div style={styles.inputGroup}>
-            <label style={styles.label}>Password</label>
             <input
               type="password"
               required
+              placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
-              placeholder="••••••••"
             />
+            <label style={styles.floatingLabel}>Password</label>
           </div>
 
           <div style={styles.inputGroup}>
-            <label style={styles.label}>Admin ID</label>
             <input
               required
+              placeholder=" "
               value={adminId}
               onChange={(e) => setAdminId(e.target.value)}
               style={styles.input}
-              placeholder="Enter Admin ID"
             />
+            <label style={styles.floatingLabel}>Admin ID</label>
           </div>
 
           <button type="submit" style={styles.button}>
@@ -79,7 +79,7 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
           </button>
         </form>
 
-        <button onClick={goToLogin} style={styles.linkButton}>
+        <button onClick={goToLogin} style={styles.switchButton}>
           Already have an account? <span style={styles.linkText}>Login</span>
         </button>
 
@@ -91,88 +91,100 @@ function SignupPage({ onSignupSuccess, goToLogin }) {
 
 export default SignupPage;
 
-// ------------------ STYLES ------------------
+// -------------------------------- STYLES --------------------------------
 
 const styles = {
   page: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     height: "100vh",
-    background: "#f3f4f6",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
+    background: "linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)",
+    backgroundSize: "400% 400%",
+    animation: "gradientMove 12s ease infinite",
   },
+
   card: {
     width: "100%",
-    maxWidth: 400,
-    background: "white",
-    borderRadius: 16,
-    padding: "32px 28px",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-    textAlign: "center",
+    maxWidth: 420,
+    padding: "40px 32px",
+    borderRadius: 20,
+    background: "rgba(255,255,255,0.12)",
+    backdropFilter: "blur(20px)",
+    boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
+    animation: "fadeIn 0.7s ease",
+    color: "white",
   },
-  title: {
-    margin: 0,
-    fontSize: 26,
-    fontWeight: 700,
-    color: "#111827",
-  },
+
+  title: { margin: 0, fontSize: 32, fontWeight: 700, textAlign: "center" },
   subtitle: {
-    fontSize: 14,
-    color: "#6b7280",
+    textAlign: "center",
+    marginTop: 6,
     marginBottom: 25,
+    fontSize: 15,
+    opacity: 0.8,
   },
-  form: {
-    textAlign: "left",
-  },
+
+  form: { },
+
   inputGroup: {
-    marginBottom: 16,
+    position: "relative",
+    marginBottom: 22,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: 600,
-    marginBottom: 6,
-    display: "block",
-    color: "#374151",
-  },
+
   input: {
     width: "100%",
-    padding: "10px 12px",
-    fontSize: 15,
-    borderRadius: 8,
-    border: "1px solid #d1d5db",
+    padding: "14px 12px",
+    fontSize: 16,
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.4)",
+    background: "rgba(255,255,255,0.1)",
+    color: "white",
     outline: "none",
     transition: "0.2s",
   },
-  button: {
-    marginTop: 10,
-    width: "100%",
-    padding: "12px 0",
-    background: "#2563eb",
-    color: "white",
-    fontSize: 16,
-    fontWeight: 600,
-    border: "none",
-    borderRadius: 8,
-    cursor: "pointer",
+
+  floatingLabel: {
+    position: "absolute",
+    left: 14,
+    top: 14,
+    color: "rgba(255,255,255,0.65)",
+    fontSize: 14,
     transition: "0.2s",
+    pointerEvents: "none",
   },
-  linkButton: {
-    marginTop: 18,
-    background: "transparent",
+
+  button: {
+    width: "100%",
+    padding: "14px 0",
+    background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
+    color: "white",
+    fontSize: 17,
+    borderRadius: 10,
     border: "none",
-    fontSize: 14,
     cursor: "pointer",
-    color: "#6b7280",
-  },
-  linkText: {
-    color: "#2563eb",
     fontWeight: 600,
+    boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+    transition: "0.25s",
   },
+
+  switchButton: {
+    marginTop: 18,
+    background: "none",
+    border: "none",
+    color: "white",
+    fontSize: 15,
+    cursor: "pointer",
+  },
+
+  linkText: { color: "#a5b4fc", fontWeight: "600" },
+
   status: {
-    marginTop: 15,
-    fontSize: 14,
-    color: "#374151",
-    whiteSpace: "pre-wrap",
+    marginTop: 20,
+    padding: 10,
+    background: "rgba(255,255,255,0.15)",
+    borderRadius: 10,
+    textAlign: "center",
   },
 };
