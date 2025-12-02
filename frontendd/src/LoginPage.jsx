@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function LoginPage({ onLoginSuccess, goToSignup }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [status, setStatus] = useState('');
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [status, setStatus] = useState("");
+
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   const submitLogin = async (e) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
       const r = await fetch(`${backendUrl}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const json = await r.json();
@@ -30,121 +32,155 @@ function LoginPage({ onLoginSuccess, goToSignup }) {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "#f0f2f5",
-      padding: 20
-    }}>
-      
-      <div style={{
-        width: "100%",
-        maxWidth: 380,
-        background: "white",
-        padding: "32px",
-        borderRadius: "16px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
-      }}>
-        
-        <h2 style={{
-          textAlign: "center",
-          marginBottom: 20,
-          fontSize: "26px",
-          fontWeight: "600",
-          color: "#333"
-        }}>
-          Login
-        </h2>
+    <div style={pageStyle}>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>Welcome Back</h2>
+        <p style={subtitleStyle}>Login to continue</p>
 
         <form onSubmit={submitLogin}>
-
-          <div style={{ marginBottom: 15 }}>
-            <label style={{ display: "block", fontWeight: 500, marginBottom: 6 }}>
-              Email
-            </label>
+          {/* EMAIL */}
+          <div style={inputGroupStyle}>
             <input
               type="email"
               required
+              placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: "10px",
-                border: "1px solid #ccc",
-                outline: "none",
-                fontSize: "15px"
-              }}
+              style={inputStyle}
             />
+            <label style={floatingLabelStyle}>Email</label>
           </div>
 
-          <div style={{ marginBottom: 15 }}>
-            <label style={{ display: "block", fontWeight: 500, marginBottom: 6 }}>
-              Password
-            </label>
+          {/* PASSWORD */}
+          <div style={inputGroupStyle}>
             <input
               type="password"
               required
+              placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: "10px",
-                border: "1px solid #ccc",
-                outline: "none",
-                fontSize: "15px"
-              }}
+              style={inputStyle}
             />
+            <label style={floatingLabelStyle}>Password</label>
           </div>
 
-          <button type="submit" style={{
-            width: "100%",
-            padding: "12px",
-            background: "#4f46e5",
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-            marginTop: 5
-          }}>
+          <button type="submit" style={buttonStyle}>
             Login
           </button>
         </form>
 
-        <button
-          onClick={goToSignup}
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginTop: 15,
-            background: "#e5e7eb",
-            border: "none",
-            borderRadius: "10px",
-            cursor: "pointer",
-            fontWeight: 500
-          }}
-        >
-          Don't have an account? Signup
+        <button onClick={goToSignup} style={switchButtonStyle}>
+          Don’t have an account? <span style={switchTextStyle}>Sign Up</span>
         </button>
 
-        <pre style={{
-          marginTop: 20,
-          background: "#f9fafb",
-          padding: "10px",
-          borderRadius: "10px",
-          fontSize: "13px",
-          color: "#555"
-        }}>
-          {status}
-        </pre>
-
+        {status && <p style={statusStyle}>{status}</p>}
       </div>
     </div>
   );
 }
 
 export default LoginPage;
+
+
+// ---------------- MATCHING STYLES ----------------
+
+const pageStyle = {
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: 20,
+  background: "linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)",
+  backgroundSize: "400% 400%",
+  animation: "gradientMove 12s ease infinite",
+};
+
+const cardStyle = {
+  width: "100%",
+  maxWidth: 420,
+  padding: "40px 32px",
+  borderRadius: 20,
+  background: "rgba(255,255,255,0.12)",
+  backdropFilter: "blur(20px)",
+  boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
+  color: "white",
+};
+
+const titleStyle = {
+  margin: 0,
+  fontSize: 32,
+  fontWeight: 700,
+  textAlign: "center",
+};
+
+const subtitleStyle = {
+  textAlign: "center",
+  marginTop: 6,
+  marginBottom: 25,
+  fontSize: 15,
+  opacity: 0.8,
+};
+
+const inputGroupStyle = {
+  position: "relative",
+  marginBottom: 22,
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px 12px",
+  fontSize: 16,
+  borderRadius: 10,
+  border: "1px solid rgba(255,255,255,0.4)",
+  background: "rgba(255,255,255,0.1)",
+  color: "white",
+  outline: "none",
+  transition: "0.2s",
+};
+
+const floatingLabelStyle = {
+  position: "absolute",
+  left: 14,
+  top: 14,
+  color: "rgba(255,255,255,0.7)",
+  fontSize: 14,
+  transition: "0.2s",
+  pointerEvents: "none",
+};
+
+const buttonStyle = {
+  width: "100%",
+  padding: "14px 0",
+  background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
+  color: "white",
+  fontSize: 17,
+  borderRadius: 10,
+  border: "none",
+  cursor: "pointer",
+  fontWeight: 600,
+  marginTop: 5,
+  boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+  transition: "0.25s",
+};
+
+const switchButtonStyle = {
+  marginTop: 18,
+  background: "none",
+  border: "none",
+  color: "white",
+  fontSize: 15,
+  cursor: "pointer",
+};
+
+const switchTextStyle = {
+  color: "#a5b4fc",
+  fontWeight: 600,
+};
+
+const statusStyle = {
+  marginTop: 20,
+  padding: 10,
+  background: "rgba(255,255,255,0.15)",
+  borderRadius: 10,
+  textAlign: "center",
+};
