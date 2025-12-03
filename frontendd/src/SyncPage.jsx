@@ -84,104 +84,102 @@ function SyncPage({ user }) {
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-8">
-      <div className="max-w-6xl mx-auto bg-white/20 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-white/30">
+    <div className="min-h-screen bg-[#f4f6f9] p-6">
 
-        {/* HEADER */}
-        <header className="mb-10 bg-white/10 rounded-2xl p-6 border border-white/20 shadow-lg">
-          <h1 className="text-4xl font-extrabold text-white drop-shadow-lg">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-100 mt-2 text-lg">
-            Welcome, <span className="font-bold">{user.email}</span> |
-            Admin ID:{" "}
-            <span className="font-mono bg-black/40 px-2 py-1 rounded text-green-300">
-              {user.admin_id}
-            </span>
-          </p>
-          <p className="text-green-300 text-sm mt-2">
-            🔄 Auto Sync Running (every 10 seconds)
-          </p>
-        </header>
+      {/* TOP NAVBAR */}
+      <div className="w-full bg-white shadow-md p-4 rounded-xl mb-8 border">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Admin Dashboard
+        </h1>
+        <p className="text-gray-600 text-sm mt-1">
+          Welcome, <span className="font-semibold">{user.email}</span> | 
+          Admin ID:{" "}
+          <span className="font-mono bg-gray-200 px-2 py-0.5 rounded">
+            {user.admin_id}
+          </span>
+        </p>
+        <p className="text-green-600 text-sm mt-1">
+          🔄 Auto Sync Running (every 10 seconds)
+        </p>
+      </div>
 
-        {/* SYNC STATUS */}
-        <section className="mb-10">
-          <h2 className="text-2xl font-bold text-white mb-3 drop-shadow">
+      <div className="max-w-6xl mx-auto space-y-10">
+
+        {/* SYNC STATUS CARD */}
+        <section className="bg-white shadow-lg rounded-xl p-6 border">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
             Sync Status
           </h2>
-          <pre className="bg-black/40 text-green-300 p-4 rounded-xl max-h-64 overflow-auto shadow-inner border border-white/10">
+          <pre className="bg-[#111] text-green-400 p-4 rounded-lg max-h-64 overflow-auto shadow-inner border border-gray-800">
             {resp}
           </pre>
         </section>
 
-        {/* WRITE COUNT CHART */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold text-white mb-4 drop-shadow">
+        {/* WRITE COUNT CHART CARD */}
+        <section className="bg-white shadow-lg rounded-xl p-6 border">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
             Last 10 Write Counts
           </h2>
-          <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-xl">
-            {writeHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
-                <LineChart data={writeChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
-                  <XAxis dataKey="name" stroke="#fff" />
-                  <YAxis stroke="#fff" />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#00ffea"
-                    strokeWidth={3}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-gray-100">Waiting for data...</p>
-            )}
-          </div>
+
+          {writeHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={writeChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis dataKey="name" stroke="#555" />
+                <YAxis stroke="#555" />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="count"
+                  stroke="#007bff"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-gray-500">Waiting for data...</p>
+          )}
         </section>
 
-        {/* ACTIVE AGENTS */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-4 drop-shadow">
+        {/* ACTIVE AGENTS CARD */}
+        <section className="bg-white shadow-lg rounded-xl p-6 border">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
             Active Agents
           </h2>
 
-          <div className="bg-white/10 p-6 rounded-2xl border border-white/20 shadow-xl">
-            {agents.length > 0 ? (
-              <table className="w-full border-collapse text-white">
-                <thead>
-                  <tr className="bg-white/20">
-                    <th className="p-3 font-semibold">Agent Name</th>
-                    <th className="p-3 font-semibold text-center">Status</th>
+          {agents.length > 0 ? (
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="p-3 font-semibold text-left">Agent Name</th>
+                  <th className="p-3 font-semibold text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {agents.map((a, index) => (
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
+                    <td className="p-3 font-mono text-gray-800">{a.name}</td>
+                    <td className="p-3 text-center">
+                      {a.active === 1 ? (
+                        <span className="px-3 py-1 bg-green-500 text-white rounded-full text-sm shadow">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 bg-red-500 text-white rounded-full text-sm shadow">
+                          Inactive
+                        </span>
+                      )}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {agents.map((a, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-white/20 hover:bg-white/10 transition"
-                    >
-                      <td className="p-3 font-mono">{a.name}</td>
-                      <td className="p-3 text-center">
-                        {a.active === 1 ? (
-                          <span className="px-3 py-1 bg-green-500/80 rounded-full text-white font-bold shadow">
-                            Active
-                          </span>
-                        ) : (
-                          <span className="px-3 py-1 bg-red-500/80 rounded-full text-white font-bold shadow">
-                            Inactive
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="text-gray-200">No agents found...</p>
-            )}
-          </div>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500">No agents found...</p>
+          )}
         </section>
       </div>
     </div>
