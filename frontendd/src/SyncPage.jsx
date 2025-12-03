@@ -24,6 +24,8 @@ function SyncPage({ user }) {
   const [writeHistory, setWriteHistory] = useState([]); // last 10 write counts
   const [agents, setAgents] = useState([]);
   const [lastSync, setLastSync] = useState(null);
+  const [countdown, setCountdown] = useState(10);
+
 
   // theme: 'auto' | 'dark' | 'light' (we only store 'dark'/'light' for simplicity)
   const [theme, setTheme] = useState(
@@ -92,6 +94,15 @@ function SyncPage({ user }) {
   useEffect(() => {
     doSync();
     fetchAgents();
+
+    useEffect(() => {
+  const t = setInterval(() => {
+    setCountdown((c) => (c > 1 ? c - 1 : 10));
+  }, 1000);
+
+  return () => clearInterval(t);
+}, []);
+
 
     const interval = setInterval(() => {
       doSync();
@@ -223,15 +234,22 @@ function SyncPage({ user }) {
             </div>
 
             <div
-              className={`p-4 rounded-xl ${
-                isDark ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-200"
-              }`}
-            >
-              <div className="text-sm text-gray-400">Auto Sync Interval</div>
-              <div className="mt-2 text-2xl font-bold">10s</div>
-              <div className="text-xs text-gray-400 mt-1">Automatic background sync</div>
-            </div>
-          </div>
+  className={`p-4 rounded-xl ${
+    isDark ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-200"
+  }`}
+>
+  <div className="text-sm text-gray-400">Auto Sync Interval</div>
+
+  <div className="mt-2 text-2xl font-bold flex items-baseline gap-2">
+    10s
+    <span className="text-red-500 text-sm font-semibold">
+      (next sync in {countdown}s)
+    </span>
+  </div>
+
+  <div className="text-xs text-gray-400 mt-1">Automatic background sync every 10 seconds</div>
+</div>
+
 
           {/* WRITE CHART */}
           <div className="col-span-12 lg:col-span-8">
