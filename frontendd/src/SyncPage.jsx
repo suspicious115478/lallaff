@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function SyncPage({ user }) {
+function SyncPage({ user, onLogout }) {
   const [resp, setResp] = useState("Starting auto-sync...");
   const [writeHistory, setWriteHistory] = useState([]);
   const [agents, setAgents] = useState([]);
@@ -119,12 +119,12 @@ function SyncPage({ user }) {
     return new Date(iso).toLocaleString();
   }
 
-  // ⭐ Logout handler (Modify if your logout function is different)
+  // ⭐ FINAL FIXED LOGOUT
   function handleLogout() {
-    if (user?.logout) {
-      user.logout(); // <--- integrated logout call
+    if (typeof onLogout === "function") {
+      onLogout(); // redirect to login page
     } else {
-      console.warn("No logout() function found in user prop");
+      console.warn("onLogout not provided to SyncPage");
     }
   }
 
@@ -144,7 +144,6 @@ function SyncPage({ user }) {
               : "bg-white border border-gray-200 shadow-sm"
           }`}
         >
-          {/* LEFT SIDE */}
           <div className="flex items-center gap-4">
             <div
               className={`flex items-center justify-center w-12 h-12 rounded-md font-bold text-lg ${
@@ -163,10 +162,7 @@ function SyncPage({ user }) {
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
           <div className="flex items-center gap-4">
-
-            {/* Last Sync Box */}
             <div
               className={`px-4 py-2 rounded-md text-sm ${
                 isDark ? "bg-gray-800/60 border border-gray-700" : "bg-white"
@@ -176,9 +172,8 @@ function SyncPage({ user }) {
               <div className="text-sm font-medium">{niceTime(lastSync)}</div>
             </div>
 
-            {/* Dark Mode Toggle */}
             <div className="flex items-center gap-3">
-              <label className="text-sm text-gray-400 mr-2">Dark Mode</label>
+              <label className="text-sm text-gray-400 mr-1">Dark</label>
               <button
                 onClick={toggleTheme}
                 className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
@@ -200,17 +195,13 @@ function SyncPage({ user }) {
             >
               Logout
             </button>
-
           </div>
         </div>
 
-        {/* -------------------- DASHBOARD GRID -------------------- */}
+        {/* -------------------- GRID -------------------- */}
         <div className="grid grid-cols-12 gap-6">
 
-          {/* LEFT KPIs */}
           <div className="col-span-12 lg:col-span-4 space-y-4">
-
-            {/* Total Writes */}
             <div
               className={`p-4 rounded-xl ${
                 isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
@@ -220,7 +211,6 @@ function SyncPage({ user }) {
               <div className="mt-2 text-2xl font-bold">{totalWrites}</div>
             </div>
 
-            {/* Active Agents */}
             <div
               className={`p-4 rounded-xl ${
                 isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
@@ -230,7 +220,6 @@ function SyncPage({ user }) {
               <div className="mt-2 text-2xl font-bold">{activeAgentCount}</div>
             </div>
 
-            {/* Auto Sync Countdown */}
             <div
               className={`p-4 rounded-xl ${
                 isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
@@ -245,10 +234,8 @@ function SyncPage({ user }) {
                 </span>
               </div>
             </div>
-
           </div>
 
-          {/* Write Chart */}
           <div className="col-span-12 lg:col-span-8">
             <div
               className={`p-4 rounded-xl h-full ${
@@ -286,7 +273,6 @@ function SyncPage({ user }) {
             </div>
           </div>
 
-          {/* Sync Response */}
           <div className="col-span-12 lg:col-span-7">
             <div
               className={`p-4 rounded-xl h-full ${
@@ -304,7 +290,6 @@ function SyncPage({ user }) {
             </div>
           </div>
 
-          {/* Active Agents */}
           <div className="col-span-12 lg:col-span-5">
             <div
               className={`p-4 rounded-xl h-full ${
@@ -358,7 +343,6 @@ function SyncPage({ user }) {
               )}
             </div>
           </div>
-
         </div>
 
         <div className="mt-6 text-xs text-gray-400 text-center">
