@@ -14,8 +14,7 @@ function SyncPage({ user }) {
   const [writeHistory, setWriteHistory] = useState([]);
   const [agents, setAgents] = useState([]);
   const [lastSync, setLastSync] = useState(null);
-  const [countdown, setCountdown] = useState(10); // 🔥 countdown state
-
+  const [countdown, setCountdown] = useState(10);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("dashboard_theme") || "light"
   );
@@ -48,7 +47,7 @@ function SyncPage({ user }) {
       }
 
       setLastSync(new Date().toISOString());
-      setCountdown(10); // 🔥 reset countdown
+      setCountdown(10);
     } catch (err) {
       setResp("Error: " + err.message);
     }
@@ -74,7 +73,6 @@ function SyncPage({ user }) {
     }
   }
 
-  // Auto Sync + Countdown Timer
   useEffect(() => {
     doSync();
     fetchAgents();
@@ -121,6 +119,15 @@ function SyncPage({ user }) {
     return new Date(iso).toLocaleString();
   }
 
+  // ⭐ Logout handler (Modify if your logout function is different)
+  function handleLogout() {
+    if (user?.logout) {
+      user.logout(); // <--- integrated logout call
+    } else {
+      console.warn("No logout() function found in user prop");
+    }
+  }
+
   return (
     <div
       className={`min-h-screen p-6 ${
@@ -128,7 +135,8 @@ function SyncPage({ user }) {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-        {/* TOP NAV */}
+
+        {/* -------------------- TOP NAV -------------------- */}
         <div
           className={`flex items-center justify-between mb-6 px-5 py-4 rounded-xl ${
             isDark
@@ -136,6 +144,7 @@ function SyncPage({ user }) {
               : "bg-white border border-gray-200 shadow-sm"
           }`}
         >
+          {/* LEFT SIDE */}
           <div className="flex items-center gap-4">
             <div
               className={`flex items-center justify-center w-12 h-12 rounded-md font-bold text-lg ${
@@ -154,7 +163,10 @@ function SyncPage({ user }) {
             </div>
           </div>
 
+          {/* RIGHT SIDE */}
           <div className="flex items-center gap-4">
+
+            {/* Last Sync Box */}
             <div
               className={`px-4 py-2 rounded-md text-sm ${
                 isDark ? "bg-gray-800/60 border border-gray-700" : "bg-white"
@@ -164,7 +176,7 @@ function SyncPage({ user }) {
               <div className="text-sm font-medium">{niceTime(lastSync)}</div>
             </div>
 
-            {/* DARK MODE TOGGLE */}
+            {/* Dark Mode Toggle */}
             <div className="flex items-center gap-3">
               <label className="text-sm text-gray-400 mr-2">Dark Mode</label>
               <button
@@ -180,48 +192,52 @@ function SyncPage({ user }) {
                 />
               </button>
             </div>
+
+            {/* ⭐ LOGOUT BUTTON */}
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+
           </div>
         </div>
 
-        {/* GRID */}
+        {/* -------------------- DASHBOARD GRID -------------------- */}
         <div className="grid grid-cols-12 gap-6">
-          {/* KPI CARDS */}
+
+          {/* LEFT KPIs */}
           <div className="col-span-12 lg:col-span-4 space-y-4">
-            {/* TOTAL WRITES */}
+
+            {/* Total Writes */}
             <div
               className={`p-4 rounded-xl ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
               <div className="text-sm text-gray-400">Total Writes (last 10)</div>
               <div className="mt-2 text-2xl font-bold">{totalWrites}</div>
             </div>
 
-            {/* ACTIVE AGENTS */}
+            {/* Active Agents */}
             <div
               className={`p-4 rounded-xl ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
               <div className="text-sm text-gray-400">Active Agents</div>
               <div className="mt-2 text-2xl font-bold">{activeAgentCount}</div>
             </div>
 
-            {/* COUNTDOWN CARD */}
+            {/* Auto Sync Countdown */}
             <div
               className={`p-4 rounded-xl ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
-              <div className="text-sm text-gray-400">
-                Auto Sync Interval (10s)
-              </div>
+              <div className="text-sm text-gray-400">Auto Sync Interval (10s)</div>
+
               <div className="mt-2 text-2xl font-bold flex items-baseline gap-2">
                 10s
                 <span className="text-red-500 text-sm font-semibold">
@@ -229,20 +245,17 @@ function SyncPage({ user }) {
                 </span>
               </div>
             </div>
+
           </div>
 
-          {/* WRITE CHART */}
+          {/* Write Chart */}
           <div className="col-span-12 lg:col-span-8">
             <div
               className={`p-4 rounded-xl h-full ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
-              <h3 className="mb-3 text-md font-semibold">
-                Last 10 Write Counts
-              </h3>
+              <h3 className="mb-3 text-md font-semibold">Last 10 Write Counts</h3>
 
               <div style={{ width: "100%", height: 260 }}>
                 {writeHistory.length > 0 ? (
@@ -252,13 +265,8 @@ function SyncPage({ user }) {
                         strokeDasharray="3 3"
                         stroke={isDark ? "#2d2d2d" : "#ddd"}
                       />
-                      <XAxis
-                        dataKey="name"
-                        stroke={isDark ? "#cbd5e1" : "#64748b"}
-                      />
-                      <YAxis
-                        stroke={isDark ? "#cbd5e1" : "#64748b"}
-                      />
+                      <XAxis dataKey="name" stroke={isDark ? "#cbd5e1" : "#64748b"} />
+                      <YAxis stroke={isDark ? "#cbd5e1" : "#64748b"} />
                       <Tooltip />
                       <Line
                         type="monotone"
@@ -278,21 +286,17 @@ function SyncPage({ user }) {
             </div>
           </div>
 
-          {/* SYNC RESPONSE */}
+          {/* Sync Response */}
           <div className="col-span-12 lg:col-span-7">
             <div
               className={`p-4 rounded-xl h-full ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
               <h3 className="mb-3 text-md font-semibold">Sync Status (raw)</h3>
               <pre
                 className={`p-3 rounded-md text-sm ${
-                  isDark
-                    ? "bg-gray-900 text-green-300"
-                    : "bg-gray-50 text-gray-800"
+                  isDark ? "bg-gray-900 text-green-300" : "bg-gray-50 text-gray-800"
                 } max-h-64 overflow-auto`}
               >
                 {resp}
@@ -300,13 +304,11 @@ function SyncPage({ user }) {
             </div>
           </div>
 
-          {/* AGENT LIST */}
+          {/* Active Agents */}
           <div className="col-span-12 lg:col-span-5">
             <div
               className={`p-4 rounded-xl h-full ${
-                isDark
-                  ? "bg-gray-800 border border-gray-700"
-                  : "bg-white border border-gray-200"
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
               <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
@@ -352,12 +354,11 @@ function SyncPage({ user }) {
                   </table>
                 </div>
               ) : (
-                <div className="text-sm text-gray-400">
-                  No agents found...
-                </div>
+                <div className="text-sm text-gray-400">No agents found...</div>
               )}
             </div>
           </div>
+
         </div>
 
         <div className="mt-6 text-xs text-gray-400 text-center">
