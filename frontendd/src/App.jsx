@@ -2,63 +2,63 @@ import React, { useState, useEffect } from 'react';
 import SignupPage from './SignupPage';
 import LoginPage from './LoginPage';
 import SyncPage from './SyncPage';
+import AgentDetailsPage from './AgentDetailsPage';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [page, setPage] = useState("signup"); // signup | login | sync
+  const [page, setPage] = useState("signup");
+  const [selectedAgent, setSelectedAgent] = useState(null);
 
-  // --------------------------
-  // LOAD USER ON PAGE REFRESH
-  // --------------------------
   useEffect(() => {
     const savedUser = localStorage.getItem("logged_user");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
-      setPage("sync");   // ⬅️ Go directly to dashboard
+      setPage("sync");
     }
   }, []);
 
-  // --------------------------
-  // SAVE USER WHEN LOGGED IN
-  // --------------------------
   const handleUserLogin = (u) => {
     setUser(u);
     setPage("sync");
     localStorage.setItem("logged_user", JSON.stringify(u));
   };
 
-  // --------------------------
-  // LOGOUT (CLEAR EVERYTHING)
-  // --------------------------
   const handleLogout = () => {
     setUser(null);
     setPage("login");
-    localStorage.removeItem("logged_user"); // only remove user
+    localStorage.removeItem("logged_user");
   };
 
-  // --------------------------
-  // PAGE ROUTING
-  // --------------------------
-  if (user) {
-    return <SyncPage user={user} onLogout={handleLogout} />;
+  // ------------------- ROUTING -------------------
+  if (page === "agent_details" && user) {
+    return (
+      <AgentDetailsPage
+        user={user}
+        agentName={selectedAgent}
+        goBack={() => setPage("sync")}
+      />
+    );
+  }
+
+  if (user && page === "sync") {
+    return (
+      <SyncPage
+        user={user}
+        onLogout={handleLogout}
+        onSelectAgent={(agentName) => {
+          setSelectedAgent(agentName);
+          setPage("agent_details");
+        }}
+      />
+    );
   }
 
   if (page === "signup") {
-    return (
-      <SignupPage
-        onSignupSuccess={handleUserLogin}
-        goToLogin={() => setPage("login")}
-      />
-    );
+    return <SignupPage onSignupSuccess={handleUserLogin} goToLogin={() => setPage("login")} />;
   }
 
   if (page === "login") {
-    return (
-      <LoginPage
-        onLoginSuccess={handleUserLogin}
-        goToSignup={() => setPage("signup")}
-      />
-    );
+    return <LoginPage onLoginSuccess={handleUserLogin} goToSignup={() => setPage("signup")} />;
   }
 
   return null;
