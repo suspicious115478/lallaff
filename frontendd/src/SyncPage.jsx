@@ -9,18 +9,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function SyncPage({ user, onLogout }) {
+function SyncPage({ user, onLogout, onSelectAgent }) {
   const [resp, setResp] = useState("Starting auto-sync...");
   const [writeHistory, setWriteHistory] = useState([]);
   const [agents, setAgents] = useState([]);
   const [lastSync, setLastSync] = useState(null);
   const [countdown, setCountdown] = useState(10);
+
   const [theme, setTheme] = useState(
     () => localStorage.getItem("dashboard_theme") || "light"
   );
-
-  function SyncPage({ user, onLogout, onSelectAgent }) {
-
 
   const backendUrl =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
@@ -56,25 +54,25 @@ function SyncPage({ user, onLogout }) {
     }
   }
 
- async function fetchAgents() {
-  try {
-    const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
-    const res = await fetch(fbURL);
-    const data = await res.json();
+  async function fetchAgents() {
+    try {
+      const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
+      const res = await fetch(fbURL);
+      const data = await res.json();
 
-    if (data) {
-      const arr = Object.keys(data).map((name) => ({
-        name,
-        active: data[name]?.state === true ? 1 : 0, // ⭐ NEW CHECK
-      }));
-      setAgents(arr);
-    } else {
-      setAgents([]);
+      if (data) {
+        const arr = Object.keys(data).map((name) => ({
+          name,
+          active: data[name]?.state === true ? 1 : 0,
+        }));
+        setAgents(arr);
+      } else {
+        setAgents([]);
+      }
+    } catch (err) {
+      console.error("Agents fetch error:", err);
     }
-  } catch (err) {
-    console.error("Agents fetch error:", err);
   }
-}
 
   useEffect(() => {
     doSync();
@@ -122,12 +120,9 @@ function SyncPage({ user, onLogout }) {
     return new Date(iso).toLocaleString();
   }
 
-  // ⭐ FINAL FIXED LOGOUT
   function handleLogout() {
     if (typeof onLogout === "function") {
-      onLogout(); // redirect to login page
-    } else {
-      console.warn("onLogout not provided to SyncPage");
+      onLogout();
     }
   }
 
@@ -138,8 +133,7 @@ function SyncPage({ user, onLogout }) {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-
-        {/* -------------------- TOP NAV -------------------- */}
+        {/* TOP BAR */}
         <div
           className={`flex items-center justify-between mb-6 px-5 py-4 rounded-xl ${
             isDark
@@ -191,7 +185,6 @@ function SyncPage({ user, onLogout }) {
               </button>
             </div>
 
-            {/* ⭐ LOGOUT BUTTON */}
             <button
               onClick={handleLogout}
               className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
@@ -201,9 +194,9 @@ function SyncPage({ user, onLogout }) {
           </div>
         </div>
 
-        {/* -------------------- GRID -------------------- */}
+        {/* GRID */}
         <div className="grid grid-cols-12 gap-6">
-
+          {/* LEFT CARDS */}
           <div className="col-span-12 lg:col-span-4 space-y-4">
             <div
               className={`p-4 rounded-xl ${
@@ -239,6 +232,7 @@ function SyncPage({ user, onLogout }) {
             </div>
           </div>
 
+          {/* WRITE CHART */}
           <div className="col-span-12 lg:col-span-8">
             <div
               className={`p-4 rounded-xl h-full ${
@@ -276,6 +270,7 @@ function SyncPage({ user, onLogout }) {
             </div>
           </div>
 
+          {/* SYNC RAW JSON */}
           <div className="col-span-12 lg:col-span-7">
             <div
               className={`p-4 rounded-xl h-full ${
@@ -293,79 +288,77 @@ function SyncPage({ user, onLogout }) {
             </div>
           </div>
 
-         <div className="col-span-12 lg:col-span-5">
-  <div
-    className={`p-4 rounded-xl h-full ${
-      isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-    }`}
-  >
-    <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
+          {/* AGENTS LIST */}
+          <div className="col-span-12 lg:col-span-5">
+            <div
+              className={`p-4 rounded-xl h-full ${
+                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+              }`}
+            >
+              <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
 
-    {agents.length > 0 ? (
-      <div
-        className={`max-h-64 overflow-auto pr-3 custom-scroll ${
-          isDark ? "scroll-dark" : "scroll-light"
-        }`}
-      >
-        <table className="w-full text-left border-separate border-spacing-y-1">
-          <thead>
-            <tr className="text-sm text-gray-400">
-              <th className="pb-2">Agent</th>
-              <th className="pb-2 text-right">Status</th>
-            </tr>
-          </thead>
+              {agents.length > 0 ? (
+                <div className="max-h-64 overflow-auto pr-3">
+                  <table className="w-full text-left border-separate border-spacing-y-1">
+                    <thead>
+                      <tr className="text-sm text-gray-400">
+                        <th className="pb-2">Agent</th>
+                        <th className="pb-2 text-right">Status</th>
+                      </tr>
+                    </thead>
 
-          <tbody>
-            {agents.map((a, idx) => (
-              <tr
-                key={idx}
-                className={`${
-                  isDark
-                    ? "bg-gray-900/40 hover:bg-gray-900/70"
-                    : "bg-gray-100 hover:bg-gray-200"
-                } transition rounded-lg`}
-              >
-               <td className="py-3 px-2 text-right text-sm flex items-center justify-end gap-3">
+                    <tbody>
+                      {agents.map((a, idx) => (
+                        <tr
+                          key={idx}
+                          className={`${
+                            isDark
+                              ? "bg-gray-900/40 hover:bg-gray-900/70"
+                              : "bg-gray-100 hover:bg-gray-200"
+                          } transition rounded-lg`}
+                        >
+                          <td className="py-3 px-2">{a.name}</td>
 
-  {/* STATUS */}
-  {a.active === 1 ? (
-    <span className="inline-flex items-center gap-2 text-green-500">
-      <span className="w-2 h-2 rounded-full bg-green-400" />
-      Active
-    </span>
-  ) : (
-    <span className="inline-flex items-center gap-2 text-red-400">
-      <span className="w-2 h-2 rounded-full bg-red-400" />
-      Inactive
-    </span>
-  )}
+                          <td className="py-3 px-2 text-right text-sm flex items-center justify-end gap-3">
+                            {a.active ? (
+                              <span className="inline-flex items-center gap-2 text-green-500">
+                                <span className="w-2 h-2 rounded-full bg-green-400" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-2 text-red-400">
+                                <span className="w-2 h-2 rounded-full bg-red-400" />
+                                Inactive
+                              </span>
+                            )}
 
-  {/* > BUTTON */}
-  <button
-    onClick={() => onSelectAgent(a.name)}
-    className={`w-7 h-7 rounded-full flex items-center justify-center 
-      ${isDark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"}
-      transition`}
-  >
-    <span className="text-lg font-bold">{">"}</span>
-  </button>
-</td>
-
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ) : (
-      <div className="text-sm text-gray-400">No agents found...</div>
-    )}
-  </div>
-</div>
-
+                            <button
+                              onClick={() => onSelectAgent(a.name)}
+                              className={`w-7 h-7 rounded-full flex items-center justify-center 
+                                ${
+                                  isDark
+                                    ? "bg-gray-700 hover:bg-gray-600"
+                                    : "bg-gray-200 hover:bg-gray-300"
+                                }
+                                transition`}
+                            >
+                              <span className="text-lg font-bold">{">"}</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-400">No agents found...</div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="mt-6 text-xs text-gray-400 text-center">
-          Professional Admin Dashboard — auto sync client. UI only; backend unchanged.
+          Professional Admin Dashboard — Auto Sync Client. UI only; backend unchanged.
         </div>
       </div>
     </div>
