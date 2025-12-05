@@ -19,6 +19,9 @@ function SyncPage({ user, onLogout }) {
     () => localStorage.getItem("dashboard_theme") || "light"
   );
 
+  function SyncPage({ user, onLogout, onSelectAgent }) {
+
+
   const backendUrl =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -322,20 +325,32 @@ function SyncPage({ user, onLogout }) {
                     : "bg-gray-100 hover:bg-gray-200"
                 } transition rounded-lg`}
               >
-                <td className="py-3 px-2 font-mono text-sm">{a.name}</td>
-                <td className="py-3 px-2 text-right text-sm">
-                  {a.active === 1 ? (
-                    <span className="inline-flex items-center gap-2 text-green-500">
-                      <span className="w-2 h-2 rounded-full bg-green-400" />
-                      Active
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2 text-red-400">
-                      <span className="w-2 h-2 rounded-full bg-red-400" />
-                      Inactive
-                    </span>
-                  )}
-                </td>
+               <td className="py-3 px-2 text-right text-sm flex items-center justify-end gap-3">
+
+  {/* STATUS */}
+  {a.active === 1 ? (
+    <span className="inline-flex items-center gap-2 text-green-500">
+      <span className="w-2 h-2 rounded-full bg-green-400" />
+      Active
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-2 text-red-400">
+      <span className="w-2 h-2 rounded-full bg-red-400" />
+      Inactive
+    </span>
+  )}
+
+  {/* > BUTTON */}
+  <button
+    onClick={() => onSelectAgent(a.name)}
+    className={`w-7 h-7 rounded-full flex items-center justify-center 
+      ${isDark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"}
+      transition`}
+  >
+    <span className="text-lg font-bold">{">"}</span>
+  </button>
+</td>
+
               </tr>
             ))}
           </tbody>
