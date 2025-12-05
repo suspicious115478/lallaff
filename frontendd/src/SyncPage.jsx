@@ -53,25 +53,25 @@ function SyncPage({ user, onLogout }) {
     }
   }
 
-  async function fetchAgents() {
-    try {
-      const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
-      const res = await fetch(fbURL);
-      const data = await res.json();
+ async function fetchAgents() {
+  try {
+    const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
+    const res = await fetch(fbURL);
+    const data = await res.json();
 
-      if (data) {
-        const arr = Object.keys(data).map((name) => ({
-          name,
-          active: data[name] === true ? 1 : 0,
-        }));
-        setAgents(arr);
-      } else {
-        setAgents([]);
-      }
-    } catch (err) {
-      console.error("Agents fetch error:", err);
+    if (data) {
+      const arr = Object.keys(data).map((name) => ({
+        name,
+        active: data[name]?.state === true ? 1 : 0, // ⭐ NEW CHECK
+      }));
+      setAgents(arr);
+    } else {
+      setAgents([]);
     }
+  } catch (err) {
+    console.error("Agents fetch error:", err);
   }
+}
 
   useEffect(() => {
     doSync();
