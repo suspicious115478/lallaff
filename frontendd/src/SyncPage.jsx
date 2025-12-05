@@ -290,59 +290,63 @@ function SyncPage({ user, onLogout }) {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-5">
-            <div
-              className={`p-4 rounded-xl h-full ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-              }`}
-            >
-              <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
+         <div className="col-span-12 lg:col-span-5">
+  <div
+    className={`p-4 rounded-xl h-full ${
+      isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+    }`}
+  >
+    <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
 
-              {agents.length > 0 ? (
-                <div className="overflow-auto max-h-64">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="text-sm text-gray-400">
-                        <th className="pb-2">Agent</th>
-                        <th className="pb-2 text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {agents.map((a, idx) => (
-                        <tr
-                          key={idx}
-                          className={`${
-                            idx % 2 === 0
-                              ? isDark
-                                ? "bg-gray-900/20"
-                                : "bg-gray-50"
-                              : ""
-                          }`}
-                        >
-                          <td className="py-2 font-mono">{a.name}</td>
-                          <td className="py-2 text-right">
-                            {a.active === 1 ? (
-                              <span className="inline-flex items-center gap-2 text-sm">
-                                <span className="w-2 h-2 rounded-full bg-green-400" />
-                                Active
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-2 text-sm text-red-400">
-                                <span className="w-2 h-2 rounded-full bg-red-400" />
-                                Inactive
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-sm text-gray-400">No agents found...</div>
-              )}
-            </div>
-          </div>
+    {agents.length > 0 ? (
+      <div
+        className={`max-h-64 overflow-auto pr-3 custom-scroll ${
+          isDark ? "scroll-dark" : "scroll-light"
+        }`}
+      >
+        <table className="w-full text-left border-separate border-spacing-y-1">
+          <thead>
+            <tr className="text-sm text-gray-400">
+              <th className="pb-2">Agent</th>
+              <th className="pb-2 text-right">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {agents.map((a, idx) => (
+              <tr
+                key={idx}
+                className={`${
+                  isDark
+                    ? "bg-gray-900/40 hover:bg-gray-900/70"
+                    : "bg-gray-100 hover:bg-gray-200"
+                } transition rounded-lg`}
+              >
+                <td className="py-3 px-2 font-mono text-sm">{a.name}</td>
+                <td className="py-3 px-2 text-right text-sm">
+                  {a.active === 1 ? (
+                    <span className="inline-flex items-center gap-2 text-green-500">
+                      <span className="w-2 h-2 rounded-full bg-green-400" />
+                      Active
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 text-red-400">
+                      <span className="w-2 h-2 rounded-full bg-red-400" />
+                      Inactive
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <div className="text-sm text-gray-400">No agents found...</div>
+    )}
+  </div>
+</div>
+
         </div>
 
         <div className="mt-6 text-xs text-gray-400 text-center">
