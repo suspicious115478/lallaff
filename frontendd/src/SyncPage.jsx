@@ -23,6 +23,7 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
   const backendUrl =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
+  /* ===================== SYNC ===================== */
   async function doSync() {
     try {
       setResp("working...");
@@ -54,18 +55,21 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
     }
   }
 
+  /* ===================== AGENTS (SUPABASE VIA BACKEND) ===================== */
   async function fetchAgents() {
     try {
-      const fbURL = `https://project-8812136035477954307-default-rtdb.firebaseio.com/agents/${user.admin_id}.json`;
-      const res = await fetch(fbURL);
-      const data = await res.json();
+      const r = await fetch(
+        `${backendUrl}/agents?admin_id=${user.admin_id}`
+      );
+      const json = await r.json();
 
-      if (data) {
-        const arr = Object.keys(data).map((name) => ({
-          name,
-          active: data[name]?.state === true ? 1 : 0,
-        }));
-        setAgents(arr);
+      if (Array.isArray(json)) {
+        setAgents(
+          json.map((a) => ({
+            name: a.agent_id,
+            active: a.status === true || a.status === "active",
+          }))
+        );
       } else {
         setAgents([]);
       }
@@ -74,6 +78,7 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
     }
   }
 
+  /* ===================== INTERVALS ===================== */
   useEffect(() => {
     doSync();
     fetchAgents();
@@ -93,6 +98,7 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
     };
   }, [user.admin_id]);
 
+  /* ===================== DERIVED ===================== */
   const writeChartData = writeHistory.map((count, idx) => ({
     name: `${idx + 1}`,
     count,
@@ -104,7 +110,7 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
   );
 
   const activeAgentCount = useMemo(
-    () => agents.filter((a) => a.active === 1).length,
+    () => agents.filter((a) => a.active).length,
     [agents]
   );
 
@@ -120,74 +126,68 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
     return new Date(iso).toLocaleString();
   }
 
-  function handleLogout() {
-    if (typeof onLogout === "function") {
-      onLogout();
-    }
-  }
-
+  /* ===================== UI ===================== */
   return (
-    <div
-      className={`min-h-screen p-6 ${
-        isDark ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-800"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto">
+    <div className={`min-h-screen flex ${isDark ? "bg-gray-900" : "bg-gray-100"}`}>
+      {/* ========== SIDEBAR ========== */}
+      <aside
+        className={`w-64 p-5 border-r ${
+          isDark ? "bg-gray-900 border-gray-800 text-gray-200" : "bg-white"
+        }`}
+      >
+        <div className="text-xl font-bold mb-6">Dispatch Admin</div>
+
+        <nav className="space-y-2 text-sm">
+          {["Dashboard", "Agents", "Sync Logs", "Settings"].map((item) => (
+            <div
+              key={item}
+              className={`px-4 py-3 rounded-lg cursor-pointer transition
+                ${
+                  isDark
+                    ? "hover:bg-gray-800"
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+            >
+              {item}
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      {/* ========== MAIN ========== */}
+      <main className="flex-1 p-6">
         {/* TOP BAR */}
         <div
-          className={`flex items-center justify-between mb-6 px-5 py-4 rounded-xl ${
-            isDark
-              ? "bg-gray-800 border border-gray-700 shadow-md"
-              : "bg-white border border-gray-200 shadow-sm"
-          }`}
+          className={`flex items-center justify-between mb-6 px-5 py-4 rounded-xl
+            ${
+              isDark
+                ? "bg-gray-800 border border-gray-700"
+                : "bg-white border border-gray-200"
+            }`}
         >
-          <div className="flex items-center gap-4">
-            <div
-              className={`flex items-center justify-center w-12 h-12 rounded-md font-bold text-lg ${
-                isDark ? "bg-indigo-700" : "bg-indigo-600 text-white"
-              }`}
-            >
-              AD
-            </div>
-
-            <div>
-              <div className="text-lg font-semibold">Dispatch Admin</div>
-              <div className="text-sm text-gray-400">
-                {user.email} • Admin ID{" "}
-                <span className="font-mono text-sm">{user.admin_id}</span>
-              </div>
+          <div>
+            <div className="font-semibold">{user.email}</div>
+            <div className="text-xs text-gray-400">
+              Admin ID: {user.admin_id}
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div
-              className={`px-4 py-2 rounded-md text-sm ${
-                isDark ? "bg-gray-800/60 border border-gray-700" : "bg-white"
-              }`}
-            >
+            <div className="text-sm">
               <div className="text-xs text-gray-400">Last Sync</div>
-              <div className="text-sm font-medium">{niceTime(lastSync)}</div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <label className="text-sm text-gray-400 mr-1">Dark</label>
-              <button
-                onClick={toggleTheme}
-                className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
-                  isDark ? "bg-indigo-600" : "bg-gray-300"
-                }`}
-              >
-                <span
-                  className={`inline-block transform bg-white w-5 h-5 rounded-full shadow transition-transform ${
-                    isDark ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
-              </button>
+              <div>{niceTime(lastSync)}</div>
             </div>
 
             <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
+              onClick={toggleTheme}
+              className="px-3 py-1 rounded-md bg-indigo-600 text-white text-sm"
+            >
+              {isDark ? "Light" : "Dark"}
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="px-3 py-1 rounded-md bg-red-600 text-white text-sm"
             >
               Logout
             </button>
@@ -196,171 +196,118 @@ function SyncPage({ user, onLogout, onSelectAgent }) {
 
         {/* GRID */}
         <div className="grid grid-cols-12 gap-6">
-          {/* LEFT CARDS */}
+          {/* STATS */}
           <div className="col-span-12 lg:col-span-4 space-y-4">
-            <div
-              className={`p-4 rounded-xl ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-              }`}
-            >
-              <div className="text-sm text-gray-400">Total Writes (last 10)</div>
-              <div className="mt-2 text-2xl font-bold">{totalWrites}</div>
-            </div>
-
-            <div
-              className={`p-4 rounded-xl ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-              }`}
-            >
-              <div className="text-sm text-gray-400">Active Agents</div>
-              <div className="mt-2 text-2xl font-bold">{activeAgentCount}</div>
-            </div>
-
-            <div
-              className={`p-4 rounded-xl ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-              }`}
-            >
-              <div className="text-sm text-gray-400">Auto Sync Interval (10s)</div>
-
-              <div className="mt-2 text-2xl font-bold flex items-baseline gap-2">
-                10s
-                <span className="text-red-500 text-sm font-semibold">
-                  (next sync in {countdown}s)
-                </span>
+            {[
+              ["Total Writes (last 10)", totalWrites],
+              ["Active Agents", activeAgentCount],
+              ["Next Sync In", `${countdown}s`],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className={`p-4 rounded-xl ${
+                  isDark ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <div className="text-sm text-gray-400">{label}</div>
+                <div className="text-2xl font-bold mt-1">{value}</div>
               </div>
-            </div>
+            ))}
           </div>
 
-          {/* WRITE CHART */}
+          {/* GRAPH */}
           <div className="col-span-12 lg:col-span-8">
             <div
-              className={`p-4 rounded-xl h-full ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+              className={`p-4 rounded-xl ${
+                isDark ? "bg-gray-800" : "bg-white"
               }`}
             >
-              <h3 className="mb-3 text-md font-semibold">Last 10 Write Counts</h3>
+              <h3 className="font-semibold mb-3">
+                Last 10 Write Counts
+              </h3>
 
-              <div style={{ width: "100%", height: 260 }}>
-                {writeHistory.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={writeChartData}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke={isDark ? "#2d2d2d" : "#ddd"}
-                      />
-                      <XAxis dataKey="name" stroke={isDark ? "#cbd5e1" : "#64748b"} />
-                      <YAxis stroke={isDark ? "#cbd5e1" : "#64748b"} />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="count"
-                        stroke={isDark ? "#60a5fa" : "#2563eb"}
-                        strokeWidth={3}
-                        dot={{ r: 4 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    Waiting for sync data...
-                  </div>
-                )}
+              <div style={{ height: 260 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={writeChartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#6366f1"
+                      strokeWidth={3}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
 
-          {/* SYNC RAW JSON */}
+          {/* RAW SYNC */}
           <div className="col-span-12 lg:col-span-7">
             <div
-              className={`p-4 rounded-xl h-full ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+              className={`p-4 rounded-xl ${
+                isDark ? "bg-gray-800" : "bg-white"
               }`}
             >
-              <h3 className="mb-3 text-md font-semibold">Sync Status (raw)</h3>
-              <pre
-                className={`p-3 rounded-md text-sm ${
-                  isDark ? "bg-gray-900 text-green-300" : "bg-gray-50 text-gray-800"
-                } max-h-64 overflow-auto`}
-              >
+              <h3 className="font-semibold mb-2">Sync Status</h3>
+              <pre className="bg-black/80 text-green-400 p-3 rounded-md max-h-64 overflow-auto text-xs">
                 {resp}
               </pre>
             </div>
           </div>
 
-          {/* AGENTS LIST */}
+          {/* AGENTS */}
           <div className="col-span-12 lg:col-span-5">
             <div
-              className={`p-4 rounded-xl h-full ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+              className={`p-4 rounded-xl ${
+                isDark ? "bg-gray-800" : "bg-white"
               }`}
             >
-              <h3 className="mb-3 text-md font-semibold">Active Agents</h3>
+              <h3 className="font-semibold mb-3">Agents</h3>
 
-              {agents.length > 0 ? (
-                <div className="max-h-64 overflow-auto pr-3">
-                  <table className="w-full text-left border-separate border-spacing-y-1">
-                    <thead>
-                      <tr className="text-sm text-gray-400">
-                        <th className="pb-2">Agent</th>
-                        <th className="pb-2 text-right">Status</th>
+              {agents.length ? (
+                <table className="w-full text-sm">
+                  <thead className="text-gray-400">
+                    <tr>
+                      <th className="text-left">Agent</th>
+                      <th className="text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {agents.map((a, i) => (
+                      <tr key={i} className="border-t border-gray-700/20">
+                        <td className="py-2">{a.name}</td>
+                        <td className="py-2 text-right">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs ${
+                              a.active
+                                ? "bg-green-600 text-white"
+                                : "bg-red-600 text-white"
+                            }`}
+                          >
+                            {a.active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-
-                    <tbody>
-                      {agents.map((a, idx) => (
-                        <tr
-                          key={idx}
-                          className={`${
-                            isDark
-                              ? "bg-gray-900/40 hover:bg-gray-900/70"
-                              : "bg-gray-100 hover:bg-gray-200"
-                          } transition rounded-lg`}
-                        >
-                          <td className="py-3 px-2">{a.name}</td>
-
-                          <td className="py-3 px-2 text-right text-sm flex items-center justify-end gap-3">
-                            {a.active ? (
-                              <span className="inline-flex items-center gap-2 text-green-500">
-                                <span className="w-2 h-2 rounded-full bg-green-400" />
-                                Active
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-2 text-red-400">
-                                <span className="w-2 h-2 rounded-full bg-red-400" />
-                                Inactive
-                              </span>
-                            )}
-
-                            <button
-                              onClick={() => onSelectAgent(a.name)}
-                              className={`w-7 h-7 rounded-full flex items-center justify-center 
-                                ${
-                                  isDark
-                                    ? "bg-gray-700 hover:bg-gray-600"
-                                    : "bg-gray-200 hover:bg-gray-300"
-                                }
-                                transition`}
-                            >
-                              <span className="text-lg font-bold">{">"}</span>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               ) : (
-                <div className="text-sm text-gray-400">No agents found...</div>
+                <div className="text-sm text-gray-400">
+                  No agents found
+                </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-6 text-xs text-gray-400 text-center">
-          Professional Admin Dashboard — Auto Sync Client. UI only; backend unchanged.
+        <div className="mt-6 text-xs text-center text-gray-400">
+          Professional Admin Dashboard • UI only • Backend unchanged
         </div>
-      </div>
+      </main>
     </div>
   );
 }
